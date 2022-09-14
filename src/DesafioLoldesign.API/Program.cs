@@ -19,8 +19,8 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Desafio LolDesign - API", Version = "v1" });
 });
-builder.Services.AddDbContext<ChallengeContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ChallengeContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+//options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IPlansRepository, PlansRepository>();
 builder.Services.AddScoped<IPlansBL, PlansBL>();
 builder.Services.AddScoped<IRatesRepository, RatesRepository>();
@@ -29,17 +29,17 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "DesafioLoldesign.API v1");
-        c.RoutePrefix = string.Empty;
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "DesafioLoldesign.API v1");
+    c.RoutePrefix = string.Empty;
 
-    });
+});
 
-}
+//}
 
 app.UseCors(x => x
     .AllowAnyOrigin()
